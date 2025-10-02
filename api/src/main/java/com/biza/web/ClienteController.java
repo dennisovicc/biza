@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,8 +19,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.biza.domain.Cliente;
+import com.biza.dto.ClienteRequest;
+import com.biza.dto.ClienteResponse;
+import com.biza.dto.ClienteUpdateRequest;
 import com.biza.repo.ClienteRepo;
 import com.biza.util.PageResponse;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/clientes")
@@ -31,54 +37,55 @@ public class ClienteController {
         this.repo = repo;
     }
 
-    // 👉 LISTAGEM PAGINADA
     @GetMapping
-    public PageResponse<Cliente> list(@RequestParam(defaultValue = "0") int page,
-                                      @RequestParam(defaultValue = "10") int size,
-                                      @RequestParam(defaultValue = "nome,asc") String sort) {
-
-        // separa "campo" e "ordem"
+    public PageResponse<ClienteResponse> list(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size,
+                                              @RequestParam(defaultValue = "nome,asc") String sort) {
         String[] parts = sort.split(",", 2);
         String campo = parts[0];
-        Sort.Direction direcao = (parts.length > 1 && parts[1].equalsIgnoreCase("desc"))
-                ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort.Direction dir = (parts.length > 1 && parts[1].equalsIgnoreCase("desc")) ? Sort.Direction.DESC : Sort.Direction.ASC;
 
-        Page<Cliente> pagina = repo.findAll(PageRequest.of(page, size, Sort.by(direcao, campo)));
-
-        return PageResponse.of(pagina); // devolve no formato bonitinho
+        Page<Cliente> p = repo.findAll(PageRequest.of(page, size, Sort.by(dir, campo)));
+        return PageResponse.of(p.map(this::toResponse));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cliente> getById(@PathVariable UUID id) {
+    public ResponseEntity<ClienteResponse> getById(@PathVariable UUID id) {
         return repo.findById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+            .map(c -> ResponseEntity.ok(toResponse(c)))
+            .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Cliente> create(@RequestBody Cliente c) {
-        if (c.getNome() == null || c.getNome().isBlank()) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(repo.save(c));
+    public ResponseEntity<ClienteResponse> create(@RequestBody @Valid ClienteRequest req) {
+        Cliente c = new Cliente();
+        applyCreate(req, c);
+        Cliente saved = repo.save(c);
+        return ResponseEntity.ok(toResponse(saved));
     }
 
+    // PUT = substituição total (nome obrigatório via DTO)
     @PutMapping("/{id}")
-    public ResponseEntity<Cliente> update(@PathVariable UUID id, @RequestBody Cliente req) {
+    public ResponseEntity<ClienteResponse> put(@PathVariable UUID id, @RequestBody @Valid ClienteRequest req) {
         return repo.findById(id)
-                .map(c -> {
-                    if (req.getNome() != null) c.setNome(req.getNome());
-                    if (req.getNuit() != null) c.setNuit(req.getNuit());
-                    if (req.getBi() != null) c.setBi(req.getBi());
-                    if (req.getEndereco() != null) c.setEndereco(req.getEndereco());
-                    if (req.getTelefone() != null) c.setTelefone(req.getTelefone());
-                    if (req.getEmail() != null) c.setEmail(req.getEmail());
-                    if (req.getTipoCliente() != null) c.setTipoCliente(req.getTipoCliente());
-                    if (req.getRendaMensal() != null) c.setRendaMensal(req.getRendaMensal());
-                    c.setUpdatedAt(OffsetDateTime.now());
-                    return ResponseEntity.ok(repo.save(c));
-                })
-                .orElseGet(() -> ResponseEntity.notFound().build());
+            .map(c -> {
+                applyCreate(req, c);
+                c.setUpdatedAt(OffsetDateTime.now());
+                return ResponseEntity.ok(toResponse(repo.save(c)));
+            })
+            .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // PATCH = atualização parcial (campos opcionais)
+    @PatchMapping("/{id}")
+    public ResponseEntity<ClienteResponse> patch(@PathVariable UUID id, @RequestBody @Valid ClienteUpdateRequest req) {
+        return repo.findById(id)
+            .map(c -> {
+                applyPatch(req, c);
+                c.setUpdatedAt(OffsetDateTime.now());
+                return ResponseEntity.ok(toResponse(repo.save(c)));
+            })
+            .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
@@ -86,5 +93,37 @@ public class ClienteController {
         if (!repo.existsById(id)) return ResponseEntity.notFound().build();
         repo.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // -------- helpers --------
+    private void applyCreate(ClienteRequest r, Cliente c) {
+        c.setNome(r.nome());
+        c.setNuit(r.nuit());
+        c.setBi(r.bi());
+        c.setEndereco(r.endereco());
+        c.setTelefone(r.telefone());
+        c.setEmail(r.email());
+        c.setTipoCliente(r.tipoCliente());
+        c.setRendaMensal(r.rendaMensal());
+        // createdAt/updatedAt já são geridos na entidade
+    }
+
+    private void applyPatch(ClienteUpdateRequest r, Cliente c) {
+        if (r.nome() != null) c.setNome(r.nome());
+        if (r.nuit() != null) c.setNuit(r.nuit());
+        if (r.bi() != null) c.setBi(r.bi());
+        if (r.endereco() != null) c.setEndereco(r.endereco());
+        if (r.telefone() != null) c.setTelefone(r.telefone());
+        if (r.email() != null) c.setEmail(r.email());
+        if (r.tipoCliente() != null) c.setTipoCliente(r.tipoCliente());
+        if (r.rendaMensal() != null) c.setRendaMensal(r.rendaMensal());
+    }
+
+    private ClienteResponse toResponse(Cliente c) {
+        return new ClienteResponse(
+            c.getId(), c.getNome(), c.getNuit(), c.getBi(), c.getEndereco(),
+            c.getTelefone(), c.getEmail(), c.getTipoCliente(), c.getRendaMensal(),
+            c.getCreatedAt(), c.getUpdatedAt()
+        );
     }
 }

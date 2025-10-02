@@ -72,7 +72,7 @@ public class CreditoController {
     public CreditoResponse aprovar(@PathVariable UUID id) {
         return toResponse(service.aprovar(id));
     }
-
+  
     @PatchMapping("/{id}/rejeitar")
     public CreditoResponse rejeitar(@PathVariable UUID id) {
         return toResponse(service.rejeitar(id));
