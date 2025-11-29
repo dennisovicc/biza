@@ -1,0 +1,49 @@
+.creditos-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+input, select {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+button {
+  margin-top: 12px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  background: #059669;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #047857;
+}
+
+.error {
+  color: #c62828;
+  margin-top: 8px;
+}

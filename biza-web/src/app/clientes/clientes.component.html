@@ -1,0 +1,76 @@
+<div class="clientes-container">
+  <section class="card">
+    <h2>Novo Cliente</h2>
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Nome *</label>
+        <input type="text" [(ngModel)]="clienteForm.nome" />
+      </div>
+
+      <div class="form-group">
+        <label>NUIT</label>
+        <input type="text" [(ngModel)]="clienteForm.nuit" />
+      </div>
+
+      <div class="form-group">
+        <label>BI</label>
+        <input type="text" [(ngModel)]="clienteForm.bi" />
+      </div>
+
+      <div class="form-group">
+        <label>Endereço</label>
+        <input type="text" [(ngModel)]="clienteForm.endereco" />
+      </div>
+
+      <div class="form-group">
+        <label>Telefone</label>
+        <input type="text" [(ngModel)]="clienteForm.telefone" />
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="clienteForm.email" />
+      </div>
+
+      <div class="form-group">
+        <label>Tipo de Cliente</label>
+        <select [(ngModel)]="clienteForm.tipoCliente">
+          <option value="PESSOA">Pessoa</option>
+          <option value="EMPRESA">Empresa</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Renda Mensal</label>
+        <input type="number" [(ngModel)]="clienteForm.rendaMensal" />
+      </div>
+
+    </div>
+
+    <button (click)="criarCliente()">Criar Cliente</button>
+
+    <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+  </section>
+
+  <section class="card">
+    <h2>Lista de Clientes</h2>
+
+    <button (click)="listarClientes()">Carregar Clientes</button>
+
+    <p *ngIf="loading">A carregar...</p>
+
+    <ul>
+      <li *ngFor="let c of clientes">
+        <strong>{{ c.nome }}</strong>
+        <span *ngIf="c.tipoCliente"> ({{ c.tipoCliente }})</span>
+        <div class="meta">
+          <span *ngIf="c.telefone">📞 {{ c.telefone }}</span>
+          <span *ngIf="c.email">✉️ {{ c.email }}</span>
+          <span *ngIf="c.rendaMensal">💰 {{ c.rendaMensal }}</span>
+        </div>
+      </li>
+    </ul>
+  </section>
+</div>

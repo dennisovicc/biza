@@ -1,0 +1,31 @@
+<div class="app-shell">
+  <header class="app-header">
+    <h1>{{ title }}</h1>
+
+    <nav class="app-nav">
+      <button
+        [class.active]="secao === 'clientes'"
+        (click)="seleccionar('clientes')">
+        Clientes
+      </button>
+
+      <button
+        [class.active]="secao === 'creditos'"
+        (click)="seleccionar('creditos')">
+        Créditos
+      </button>
+
+      <button
+        [class.active]="secao === 'pagamentos'"
+        (click)="seleccionar('pagamentos')">
+        Pagamentos
+      </button>
+    </nav>
+  </header>
+
+  <main class="app-main">
+    <app-clientes *ngIf="secao === 'clientes'"></app-clientes>
+    <app-creditos *ngIf="secao === 'creditos'"></app-creditos>
+    <app-pagamentos *ngIf="secao === 'pagamentos'"></app-pagamentos>
+  </main>
+</div>

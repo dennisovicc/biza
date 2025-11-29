@@ -1,0 +1,32 @@
+.app-shell {
+  min-height: 100vh;
+  background: #f3f4f6;
+}
+
+.app-header {
+  background: #111827;
+  color: #f9fafb;
+  padding: 12px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.app-nav button {
+  margin-right: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: none;
+  background: #4b5563;
+  color: #e5e7eb;
+  cursor: pointer;
+}
+
+.app-nav button.active {
+  background: #10b981;
+  color: #111827;
+}
+
+.app-main {
+  padding: 16px;
+}

@@ -1,0 +1,45 @@
+<div class="pagamentos-container">
+
+  <section class="card">
+    <h2>Novo Pagamento</h2>
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Crédito *</label>
+        <select [(ngModel)]="selectedCreditoId">
+          <option [ngValue]="null">-- seleccione --</option>
+          <option *ngFor="let cr of creditos" [ngValue]="cr.id">
+            {{ cr.id }} — {{ cr.montante }} ({{ cr.status }})
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Valor do Pagamento *</label>
+        <input type="number" [(ngModel)]="valor" />
+      </div>
+
+    </div>
+
+    <button (click)="registarPagamento()">Registar Pagamento</button>
+
+    <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+  </section>
+
+  <section class="card">
+    <h2>Pagamentos do Crédito</h2>
+
+    <button (click)="listarPagamentos()">Carregar Pagamentos</button>
+
+    <p *ngIf="loading">A carregar...</p>
+
+    <ul>
+      <li *ngFor="let p of pagamentos">
+        <strong>{{ p.valor }}</strong>
+        — {{ p.dataPagamento || p.createdAt }}
+      </li>
+    </ul>
+  </section>
+
+</div>
