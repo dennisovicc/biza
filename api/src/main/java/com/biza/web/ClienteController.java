@@ -1,6 +1,7 @@
 package com.biza.web;
 
 import java.time.OffsetDateTime;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -89,10 +90,10 @@ public class ClienteController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Map<String, String>> delete(@PathVariable UUID id) {
         if (!repo.existsById(id)) return ResponseEntity.notFound().build();
         repo.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body(Map.of("message", "Cliente removido successo"));
     }
 
     // -------- helpers --------
