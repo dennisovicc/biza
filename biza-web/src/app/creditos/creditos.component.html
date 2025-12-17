@@ -1,61 +1,77 @@
-<div class="creditos-container">
+<table *ngIf="creditos.length">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Tipo</th>
+      <th>Montante</th>
+      <th>Prazo</th>
+      <th>Juro mensal</th>
+      <th>Saldo devedor</th>
+      <th>Meses atraso</th>
+      <th>Status</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let c of creditos">
+      <td>{{ c.id | slice:0:8 }}...</td>
+      <td>{{ c.tipoCredito }}</td>
+      <td>{{ c.montante | number:'1.2-2' }}</td>
+      <td>{{ c.prazoMeses }}</td>
+      <td>{{ c.taxaJurosMensal }} %</td>
+      <td>{{ c.saldoDevedor | number:'1.2-2' }}</td>
+      <td>{{ c.mesesEmAtraso }}</td>
+      <td>{{ c.status }}</td>
+      <td>
+        <!-- enquanto está a carregar esta linha -->
+        <span *ngIf="rowLoadingId === c.id">...</span>
 
-  <section class="card">
-    <h2>Novo Crédito</h2>
+        <!-- SOLICITADO -> pode aprovar ou rejeitar -->
+        <button
+          *ngIf="c.status === 'SOLICITADO'"
+          (click)="aprovarCredito(c)"
+          [disabled]="rowLoadingId === c.id">
+          Aprovar
+        </button>
 
-    <div class="form-grid">
+        <button
+          *ngIf="c.status === 'SOLICITADO'"
+          (click)="rejeitarCredito(c)"
+          [disabled]="rowLoadingId === c.id">
+          Rejeitar
+        </button>
 
-      <div class="form-group">
-        <label>Cliente *</label>
-        <select [(ngModel)]="selectedClienteId">
-          <option [ngValue]="null">-- seleccione --</option>
-          <option *ngFor="let c of clientes" [ngValue]="c.id">
-            {{ c.nome }}
-          </option>
-        </select>
-      </div>
+        <!-- APROVADO -> pode liberar -->
+        <button
+          *ngIf="c.status === 'APROVADO'"
+          (click)="liberarCredito(c)"
+          [disabled]="rowLoadingId === c.id">
+          Liberar
+        </button>
 
-      <div class="form-group">
-        <label>Montante *</label>
-        <input type="number" [(ngModel)]="montante" />
-      </div>
+        <!-- EM_CURSO -> pode actualizar saldo e liquidar (ou ir para pagamentos) -->
+        <button
+          *ngIf="c.status === 'EM_CURSO'"
+          (click)="atualizarSaldo(c)"
+          [disabled]="rowLoadingId === c.id">
+          Actualizar saldo
+        </button>
 
-      <div class="form-group">
-        <label>Taxa de Juros Anual (%) *</label>
-        <input type="number" [(ngModel)]="taxaJurosAnual" />
-      </div>
+        <button
+          *ngIf="c.status === 'EM_CURSO'"
+          (click)="liquidarCredito(c)"
+          [disabled]="rowLoadingId === c.id">
+          Liquidar
+        </button>
 
-      <div class="form-group">
-        <label>Prazo (meses) *</label>
-        <input type="number" [(ngModel)]="prazoMeses" />
-      </div>
-
-    </div>
-
-    <button (click)="criarCredito()">Criar Crédito</button>
-
-    <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
-  </section>
-
-  <section class="card">
-    <h2>Créditos do Cliente</h2>
-
-    <button (click)="listarCreditos()">Carregar Créditos</button>
-
-    <p *ngIf="loading">A carregar...</p>
-
-    <ul>
-      <li *ngFor="let cr of creditos">
-        <strong>{{ cr.montante }}</strong>
-        — {{ cr.status }}
-        <span *ngIf="cr.saldoDevedor !== undefined">
-          — Saldo devedor: {{ cr.saldoDevedor }}
-        </span>
-        <span *ngIf="cr.prazoMeses">
-          — Prazo: {{ cr.prazoMeses }} meses
-        </span>
-      </li>
-    </ul>
-  </section>
-
-</div>
+        <!-- exemplo: botão para ir para pagamentos
+        <button
+          *ngIf="c.status === 'EM_CURSO'"
+          (click)="pagarCredito(c)">
+          Pagamentos
+        </button>
+        -->
+      </td>
+    </tr>
+  </tbody>
+</table>

@@ -3,29 +3,26 @@
     <h1>{{ title }}</h1>
 
     <nav class="app-nav">
-      <button
-        [class.active]="secao === 'clientes'"
-        (click)="seleccionar('clientes')">
+      <a routerLink="/clientes" routerLinkActive="active">
         Clientes
-      </button>
+      </a>
 
-      <button
-        [class.active]="secao === 'creditos'"
-        (click)="seleccionar('creditos')">
+      <a routerLink="/creditos" routerLinkActive="active">
         Créditos
-      </button>
+      </a>
 
-      <button
-        [class.active]="secao === 'pagamentos'"
-        (click)="seleccionar('pagamentos')">
+      <a routerLink="/pagamentos" routerLinkActive="active">
         Pagamentos
-      </button>
+      </a>
+
+      <!-- PERFIL APROVADOR -->
+      <a routerLink="/credito-aprovacao" routerLinkActive="active">
+        Aprovação de Créditos
+      </a>
     </nav>
   </header>
 
   <main class="app-main">
-    <app-clientes *ngIf="secao === 'clientes'"></app-clientes>
-    <app-creditos *ngIf="secao === 'creditos'"></app-creditos>
-    <app-pagamentos *ngIf="secao === 'pagamentos'"></app-pagamentos>
+    <router-outlet></router-outlet>
   </main>
 </div>

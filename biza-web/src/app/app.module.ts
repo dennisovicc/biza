@@ -10,13 +10,17 @@ import { FormsModule } from '@angular/forms';
 import { ClientesComponent } from './clientes/clientes.component';
 import { CreditosComponent } from './creditos/creditos.component';
 import { PagamentosComponent } from './pagamentos/pagamentos.component';
+import { CreditoAcoesComponent } from './creditos/credito-acoes/credito-acoes.component';
+import { CreditoAprovacaoComponent } from './creditos/credito-aprovacao/credito-aprovacao.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ClientesComponent,
     CreditosComponent,
-    PagamentosComponent
+    PagamentosComponent,
+    CreditoAcoesComponent,
+    CreditoAprovacaoComponent
   ],
   imports: [
     BrowserModule,

@@ -1,3 +1,5 @@
+export type TipoCredito = 'RAPIDO' | 'LONGO';
+
 export type StatusCredito =
   | 'SOLICITADO'
   | 'APROVADO'
@@ -6,14 +8,16 @@ export type StatusCredito =
   | 'LIQUIDADO';
 
 export interface Credito {
-  id?: string;
-  clienteId: string;
+  id: string;              // UUID
+  clienteId: number;       // Long
+  tipoCredito: TipoCredito;
   montante: number;
-  taxaJurosAnual: number;
   prazoMeses: number;
-  status?: StatusCredito;
-  saldoDevedor?: number;
-  dataInicio?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  taxaJurosMensal: number; // 15 ou 30
+  status: StatusCredito;
+  dataInicio?: string | null;
+  saldoDevedor: number;
+  mesesEmAtraso: number;
+  createdAt: string;
+  updatedAt: string;
 }

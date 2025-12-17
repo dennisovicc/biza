@@ -1,0 +1,63 @@
+<div class="page">
+  <h2>Aprovação de Créditos</h2>
+
+  <div class="toolbar">
+    <label>Filtrar por estado:</label>
+    <select [(ngModel)]="filtroStatus" (ngModelChange)="onFiltroChange($event)">
+      <option value="SOLICITADO">SOLICITADO</option>
+      <option value="APROVADO">APROVADO</option>
+      <option value="EM_CURSO">EM_CURSO</option>
+      <option value="REJEITADO">REJEITADO</option>
+      <option value="LIQUIDADO">LIQUIDADO</option>
+    </select>
+
+    <button (click)="carregar()" [disabled]="loading">
+      {{ loading ? 'A carregar...' : 'Actualizar' }}
+    </button>
+  </div>
+
+  <p *ngIf="errorMessage" class="erro">{{ errorMessage }}</p>
+
+  <table *ngIf="creditos.length" class="tabela">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Cliente</th>
+        <th>Tipo</th>
+        <th>Montante</th>
+        <th>Prazo</th>
+        <th>Juro mensal</th>
+        <th>Saldo</th>
+        <th>Atraso</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let c of creditos">
+        <td>{{ c.id | slice:0:8 }}...</td>
+        <td>{{ c.clienteId }}</td>
+        <td>{{ c.tipoCredito }}</td>
+        <td>{{ c.montante | number:'1.2-2' }}</td>
+        <td>{{ c.prazoMeses }}</td>
+        <td>{{ c.taxaJurosMensal }}%</td>
+        <td>{{ c.saldoDevedor | number:'1.2-2' }}</td>
+        <td>{{ c.mesesEmAtraso }}</td>
+        <td>{{ c.status }}</td>
+
+        <td>
+          <!-- componente de acções exclusivo do perfil aprovador -->
+          <app-credito-acoes
+            [credito]="c"
+            (updated)="onCreditoUpdated($event)">
+          </app-credito-acoes>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="!loading && !creditos.length" class="vazio">
+    Nenhum crédito encontrado para este estado.
+  </p>
+</div>

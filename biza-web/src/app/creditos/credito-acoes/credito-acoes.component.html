@@ -1,0 +1,42 @@
+<div class="acoes">
+  <span *ngIf="loading">...</span>
+  <span *ngIf="errorMessage" class="erro">{{ errorMessage }}</span>
+
+  <!-- SOLICITADO -> Aprovar / Rejeitar -->
+  <button
+    *ngIf="credito.status === 'SOLICITADO'"
+    (click)="aprovar()"
+    [disabled]="loading">
+    Aprovar
+  </button>
+
+  <button
+    *ngIf="credito.status === 'SOLICITADO'"
+    (click)="rejeitar()"
+    [disabled]="loading">
+    Rejeitar
+  </button>
+
+  <!-- APROVADO -> Liberar -->
+  <button
+    *ngIf="credito.status === 'APROVADO'"
+    (click)="liberar()"
+    [disabled]="loading">
+    Liberar
+  </button>
+
+  <!-- EM_CURSO -> Actualizar saldo / Liquidar -->
+  <button
+    *ngIf="credito.status === 'EM_CURSO'"
+    (click)="atualizarSaldo()"
+    [disabled]="loading">
+    Actualizar saldo
+  </button>
+
+  <button
+    *ngIf="credito.status === 'EM_CURSO'"
+    (click)="liquidar()"
+    [disabled]="loading">
+    Liquidar
+  </button>
+</div>

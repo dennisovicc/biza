@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Credito } from '../models/credito.model';
 
-interface PageResponse<T> {
+export interface PageResponse<T> {
   content: T[];
   totalElements: number;
   totalPages: number;
@@ -12,30 +12,55 @@ interface PageResponse<T> {
 }
 
 export interface CriarCreditoRequest {
-  clienteId: string;
+  clienteId: number;
+  tipoCredito: 'RAPIDO' | 'LONGO';
   montante: number;
-  taxaJurosAnual: number;
   prazoMeses: number;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class CreditoService {
-
-  private apiUrl = 'http://localhost:8080/api/v1/creditos';
+  private baseUrl = 'http://localhost:8080/api/v1/creditos';
 
   constructor(private http: HttpClient) {}
 
-  listar(clienteId?: string | null): Observable<PageResponse<Credito>> {
-    let params = new HttpParams();
-    if (clienteId) {
-      params = params.set('clienteId', clienteId);
-    }
-    return this.http.get<PageResponse<Credito>>(this.apiUrl, { params });
+  criar(req: CriarCreditoRequest): Observable<Credito> {
+    return this.http.post<Credito>(this.baseUrl, req);
   }
 
-  criar(request: CriarCreditoRequest): Observable<Credito> {
-    return this.http.post<Credito>(this.apiUrl, request);
+listar(clienteId?: number, filtroStatus?: string): Observable<PageResponse<Credito>> {
+  let params = new HttpParams();
+  if (clienteId != null) {
+    params = params.set('clienteId', clienteId);
   }
+  if (status) {
+    params = params.set('status', status);
+  }
+  return this.http.get<PageResponse<Credito>>(this.baseUrl, { params });
+}
+
+  aprovar(id: string) {
+    return this.http.patch<Credito>(`${this.baseUrl}/${id}/aprovar`, {});
+  }
+
+  rejeitar(id: string) {
+    return this.http.patch<Credito>(`${this.baseUrl}/${id}/rejeitar`, {});
+  }
+
+  liberar(id: string) {
+    return this.http.patch<Credito>(`${this.baseUrl}/${id}/liberar`, {});
+  }
+
+  liquidar(id: string) {
+    return this.http.patch<Credito>(`${this.baseUrl}/${id}/liquidar`, {});
+  }
+
+  atualizarSaldo(id: string) {
+    return this.http.patch<Credito>(`${this.baseUrl}/${id}/atualizar-saldo`, {});
+  }
+  listarPorStatus(status: string): Observable<PageResponse<Credito>> {
+  let params = new HttpParams().set('status', status);
+  return this.http.get<PageResponse<Credito>>(this.baseUrl, { params });
+}
+
 }

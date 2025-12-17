@@ -1,16 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { CreditoService, CriarCreditoRequest } from '../services/credito.service';
+import { CreditoService, CriarCreditoRequest, PageResponse } from '../services/credito.service';
 import { ClienteService } from '../services/cliente.service';
 import { Credito } from '../models/credito.model';
 import { Cliente } from '../models/cliente.model';
-
-interface PageResponse<T> {
-  content: T[];
-  totalElements: number;
-  totalPages: number;
-  size: number;
-  number: number;
-}
 
 @Component({
   selector: 'app-creditos',
@@ -22,10 +14,11 @@ export class CreditosComponent implements OnInit {
   clientes: Cliente[] = [];
   creditos: Credito[] = [];
 
-  selectedClienteId: string | null = null;
+  selectedClienteId: number | null = null;
+
+  tipoCredito: 'RAPIDO' | 'LONGO' = 'RAPIDO';
   montante: number | null = null;
-  taxaJurosAnual: number | null = null;
-  prazoMeses: number | null = null;
+  prazoMeses: number | null = 1;
 
   loading = false;
   errorMessage = '';
@@ -52,7 +45,7 @@ export class CreditosComponent implements OnInit {
   }
 
   listarCreditos(): void {
-    if (!this.selectedClienteId) {
+    if (this.selectedClienteId == null) {
       this.errorMessage = 'Seleccione um cliente para ver os créditos.';
       return;
     }
@@ -74,16 +67,12 @@ export class CreditosComponent implements OnInit {
   }
 
   criarCredito(): void {
-    if (!this.selectedClienteId) {
+    if (this.selectedClienteId == null) {
       this.errorMessage = 'Seleccione um cliente.';
       return;
     }
     if (this.montante == null || this.montante <= 0) {
       this.errorMessage = 'Informe um montante válido.';
-      return;
-    }
-    if (this.taxaJurosAnual == null || this.taxaJurosAnual < 0) {
-      this.errorMessage = 'Informe uma taxa de juros válida.';
       return;
     }
     if (this.prazoMeses == null || this.prazoMeses <= 0) {
@@ -93,8 +82,8 @@ export class CreditosComponent implements OnInit {
 
     const request: CriarCreditoRequest = {
       clienteId: this.selectedClienteId,
+      tipoCredito: this.tipoCredito,
       montante: this.montante,
-      taxaJurosAnual: this.taxaJurosAnual,
       prazoMeses: this.prazoMeses
     };
 
@@ -104,8 +93,7 @@ export class CreditosComponent implements OnInit {
     this.creditoService.criar(request).subscribe({
       next: () => {
         this.montante = null;
-        this.taxaJurosAnual = null;
-        this.prazoMeses = null;
+        this.prazoMeses = 1;
         this.listarCreditos();
       },
       error: (err) => {
@@ -114,5 +102,13 @@ export class CreditosComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  // recebe actualizações do componente de acções
+  onCreditoUpdated(updated: Credito): void {
+    const idx = this.creditos.findIndex(c => c.id === updated.id);
+    if (idx >= 0) {
+      this.creditos[idx] = updated;
+    }
   }
 }
