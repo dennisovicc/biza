@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Credito } from '../../models/credito.model';
 import { CreditoService, PageResponse } from '../../services/credito.service';
+import { Credito } from '../../models/credito.model';
 
 @Component({
   selector: 'app-credito-aprovacao',
@@ -13,7 +13,6 @@ export class CreditoAprovacaoComponent implements OnInit {
   loading = false;
   errorMessage = '';
 
-  // filtro padrão: ver só pedidos para aprovar/rejeitar
   filtroStatus: 'SOLICITADO' | 'APROVADO' | 'EM_CURSO' | 'REJEITADO' | 'LIQUIDADO' = 'SOLICITADO';
 
   constructor(private creditoService: CreditoService) {}
@@ -43,14 +42,12 @@ export class CreditoAprovacaoComponent implements OnInit {
     const idx = this.creditos.findIndex(c => c.id === updated.id);
     if (idx >= 0) {
       this.creditos[idx] = updated;
+      // opcional: se mudou de estado e já não pertence ao filtro, recarrega
+      if (updated.status !== this.filtroStatus) {
+        this.carregar();
+      }
     } else {
-      // se não existir (caso raro), recarrega para garantir consistência
       this.carregar();
     }
-  }
-
-  onFiltroChange(status: any): void {
-    this.filtroStatus = status;
-    this.carregar();
   }
 }

@@ -1,0 +1,245 @@
+/* login.component.scss - Melhorias incrementais */
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 20px;
+}
+
+.login-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  padding: 32px;
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid #e1e5e9;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 32px;
+  
+  .login-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #2d3748;
+    margin: 0 0 8px 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  
+  .login-subtitle {
+    font-size: 14px;
+    color: #718096;
+    margin: 0;
+    font-weight: 400;
+  }
+}
+
+.field {
+  margin-bottom: 24px;
+  
+  &:last-of-type {
+    margin-bottom: 32px;
+  }
+}
+
+.input-label {
+  display: block;
+  
+  .label-text {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #4a5568;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+.input-container {
+  position: relative;
+  
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #4299e1;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+  
+  &:focus-within:after {
+    transform: scaleX(1);
+  }
+}
+
+.form-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  background: #f8fafc;
+  color: #2d3748;
+  
+  &:focus {
+    outline: none;
+    border-color: #4299e1;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+  }
+  
+  &:disabled {
+    background: #edf2f7;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+  
+  &::placeholder {
+    color: #a0aec0;
+    font-size: 14px;
+  }
+}
+
+.login-btn {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(49, 130, 206, 0.3);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+  
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  &.loading {
+    .btn-text {
+      display: none;
+    }
+    
+    .btn-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+  }
+}
+
+.btn-loading {
+  display: none;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: #fed7d7;
+  border: 1px solid #fc8181;
+  border-radius: 6px;
+  color: #c53030;
+  font-size: 14px;
+  margin: 20px 0 0 0;
+  animation: fadeIn 0.3s ease;
+  
+  .error-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    fill: #c53030;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-footer {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+  text-align: center;
+  
+  .footer-text {
+    font-size: 13px;
+    color: #718096;
+    margin: 0;
+    
+    .help-link {
+      color: #4299e1;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s ease;
+      
+      &:hover {
+        color: #2c5282;
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 24px;
+    margin: 0 16px;
+  }
+  
+  .login-title {
+    font-size: 24px !important;
+  }
+}

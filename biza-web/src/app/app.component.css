@@ -1,32 +1,70 @@
-.app-shell {
-  min-height: 100vh;
-  background: #f3f4f6;
+:host { display:block; }
+
+.app-shell{
+  min-height:100vh;
+  background:#0b1220;
+  color:#e5e7eb;
 }
 
-.app-header {
-  background: #111827;
-  color: #f9fafb;
-  padding: 12px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.app-header{
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding: 12px 18px;
+  background: rgba(15,23,42,0.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
-.app-nav button {
-  margin-right: 8px;
-  padding: 6px 12px;
+.header-left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.logo{ height:34px; width:auto; }
+
+.app-nav{
+  display:flex;
+  gap:12px;
+  padding: 6px 10px;
   border-radius: 999px;
-  border: none;
-  background: #4b5563;
-  color: #e5e7eb;
-  cursor: pointer;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
 }
 
-.app-nav button.active {
-  background: #10b981;
-  color: #111827;
+.app-nav a{
+  color:#e5e7eb;
+  text-decoration:none;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 14px;
 }
 
-.app-main {
-  padding: 16px;
+.app-nav a.active{
+  background: rgba(56,189,248,0.18);
+  border: 1px solid rgba(56,189,248,0.35);
 }
+
+.app-main{
+  padding: 18px;
+  max-width: 1150px;
+  margin: 0 auto;
+}
+
+.logout-btn{
+  background:#ef4444;
+  border:none;
+  color:white;
+  padding:8px 12px;
+  cursor:pointer;
+  border-radius:10px;
+}
+
+.logout-btn:hover{ background:#dc2626; }
+
+.user-name{ font-weight:700; }
+.user-role{ font-size:12px; opacity:0.8; }

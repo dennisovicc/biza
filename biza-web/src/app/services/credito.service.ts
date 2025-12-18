@@ -33,11 +33,11 @@ listar(clienteId?: number, filtroStatus?: string): Observable<PageResponse<Credi
   if (clienteId != null) {
     params = params.set('clienteId', clienteId);
   }
-  if (status) {
-    params = params.set('status', status);
+  if (filtroStatus != null && filtroStatus !== '') {
+    params = params.set('status', filtroStatus);
   }
   return this.http.get<PageResponse<Credito>>(this.baseUrl, { params });
-}
+  }
 
   aprovar(id: string) {
     return this.http.patch<Credito>(`${this.baseUrl}/${id}/aprovar`, {});

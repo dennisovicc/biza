@@ -2,8 +2,8 @@
   <h2>Aprovação de Créditos</h2>
 
   <div class="toolbar">
-    <label>Filtrar por estado:</label>
-    <select [(ngModel)]="filtroStatus" (ngModelChange)="onFiltroChange($event)">
+    <label>Estado:</label>
+    <select [(ngModel)]="filtroStatus" (change)="carregar()">
       <option value="SOLICITADO">SOLICITADO</option>
       <option value="APROVADO">APROVADO</option>
       <option value="EM_CURSO">EM_CURSO</option>
@@ -17,8 +17,9 @@
   </div>
 
   <p *ngIf="errorMessage" class="erro">{{ errorMessage }}</p>
+  <p *ngIf="loading">A carregar...</p>
 
-  <table *ngIf="creditos.length" class="tabela">
+  <table *ngIf="creditos?.length" class="tabela">
     <thead>
       <tr>
         <th>ID</th>
@@ -47,7 +48,6 @@
         <td>{{ c.status }}</td>
 
         <td>
-          <!-- componente de acções exclusivo do perfil aprovador -->
           <app-credito-acoes
             [credito]="c"
             (updated)="onCreditoUpdated($event)">
@@ -57,7 +57,7 @@
     </tbody>
   </table>
 
-  <p *ngIf="!loading && !creditos.length" class="vazio">
+  <p *ngIf="!loading && (!creditos || !creditos.length)">
     Nenhum crédito encontrado para este estado.
   </p>
 </div>

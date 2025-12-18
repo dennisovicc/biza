@@ -1,77 +1,69 @@
-<table *ngIf="creditos.length">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Tipo</th>
-      <th>Montante</th>
-      <th>Prazo</th>
-      <th>Juro mensal</th>
-      <th>Saldo devedor</th>
-      <th>Meses atraso</th>
-      <th>Status</th>
-      <th>Ações</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let c of creditos">
-      <td>{{ c.id | slice:0:8 }}...</td>
-      <td>{{ c.tipoCredito }}</td>
-      <td>{{ c.montante | number:'1.2-2' }}</td>
-      <td>{{ c.prazoMeses }}</td>
-      <td>{{ c.taxaJurosMensal }} %</td>
-      <td>{{ c.saldoDevedor | number:'1.2-2' }}</td>
-      <td>{{ c.mesesEmAtraso }}</td>
-      <td>{{ c.status }}</td>
-      <td>
-        <!-- enquanto está a carregar esta linha -->
-        <span *ngIf="rowLoadingId === c.id">...</span>
+<div class="page">
+  <h2>Créditos (Operador)</h2>
 
-        <!-- SOLICITADO -> pode aprovar ou rejeitar -->
-        <button
-          *ngIf="c.status === 'SOLICITADO'"
-          (click)="aprovarCredito(c)"
-          [disabled]="rowLoadingId === c.id">
-          Aprovar
-        </button>
+  <p *ngIf="errorMessage" class="erro">{{ errorMessage }}</p>
 
-        <button
-          *ngIf="c.status === 'SOLICITADO'"
-          (click)="rejeitarCredito(c)"
-          [disabled]="rowLoadingId === c.id">
-          Rejeitar
-        </button>
+  <div class="form">
+    <label>Cliente</label>
+    <select [(ngModel)]="selectedClienteId" (change)="listarCreditos()">
+      <option [ngValue]="null">-- seleccione um cliente --</option>
+      <option *ngFor="let c of clientes" [ngValue]="c.id">
+        {{ c.nome }} (ID {{ c.id }})
+      </option>
+    </select>
 
-        <!-- APROVADO -> pode liberar -->
-        <button
-          *ngIf="c.status === 'APROVADO'"
-          (click)="liberarCredito(c)"
-          [disabled]="rowLoadingId === c.id">
-          Liberar
-        </button>
+    <label>Tipo de crédito</label>
+    <select [(ngModel)]="tipoCredito">
+      <option value="RAPIDO">Rápido (15%/mês)</option>
+      <option value="LONGO">Longo (30%/mês)</option>
+    </select>
 
-        <!-- EM_CURSO -> pode actualizar saldo e liquidar (ou ir para pagamentos) -->
-        <button
-          *ngIf="c.status === 'EM_CURSO'"
-          (click)="atualizarSaldo(c)"
-          [disabled]="rowLoadingId === c.id">
-          Actualizar saldo
-        </button>
+    <label>Montante</label>
+    <input type="number" [(ngModel)]="montante" />
 
-        <button
-          *ngIf="c.status === 'EM_CURSO'"
-          (click)="liquidarCredito(c)"
-          [disabled]="rowLoadingId === c.id">
-          Liquidar
-        </button>
+    <label>Prazo (meses)</label>
+    <input type="number" [(ngModel)]="prazoMeses" />
 
-        <!-- exemplo: botão para ir para pagamentos
-        <button
-          *ngIf="c.status === 'EM_CURSO'"
-          (click)="pagarCredito(c)">
-          Pagamentos
-        </button>
-        -->
-      </td>
-    </tr>
-  </tbody>
-</table>
+    <div class="actions">
+      <button (click)="criarCredito()" [disabled]="loading">Criar crédito</button>
+      <button (click)="listarCreditos()" [disabled]="loading || selectedClienteId == null">
+        Actualizar lista
+      </button>
+    </div>
+  </div>
+
+  <p *ngIf="loading">A carregar...</p>
+
+  <table *ngIf="creditos?.length" class="tabela">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Cliente</th>
+        <th>Tipo</th>
+        <th>Montante</th>
+        <th>Prazo</th>
+        <th>Juro mensal</th>
+        <th>Saldo</th>
+        <th>Atraso</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let c of creditos">
+        <td>{{ c.id | slice:0:8 }}...</td>
+        <td>{{ c.clienteId }}</td>
+        <td>{{ c.tipoCredito }}</td>
+        <td>{{ c.montante | number:'1.2-2' }}</td>
+        <td>{{ c.prazoMeses }}</td>
+        <td>{{ c.taxaJurosMensal }}%</td>
+        <td>{{ c.saldoDevedor | number:'1.2-2' }}</td>
+        <td>{{ c.mesesEmAtraso }}</td>
+        <td>{{ c.status }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="!loading && selectedClienteId != null && (!creditos || !creditos.length)">
+    Este cliente ainda não tem créditos.
+  </p>
+</div>

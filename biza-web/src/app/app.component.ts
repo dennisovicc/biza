@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -8,10 +10,13 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'Biza Microcrédito';
 
-  // secção seleccionada no “menu”
-  secao: 'clientes' | 'creditos' | 'pagamentos' = 'clientes';
+  constructor(
+    public auth: AuthService,
+    private router: Router
+  ) {}
 
-  seleccionar(secao: 'clientes' | 'creditos' | 'pagamentos') {
-    this.secao = secao;
+  logout(): void {
+    this.auth.logout();
+    this.router.navigate(['/login']);
   }
 }

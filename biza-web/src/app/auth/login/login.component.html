@@ -1,0 +1,62 @@
+<!-- login.component.html (versão melhorada mas simples) -->
+<div class="login-wrapper">
+  <div class="login-card">
+    <div class="card-header">
+      <h2 class="login-title">Login</h2>
+      <p class="login-subtitle">Acesse sua conta para continuar</p>
+    </div>
+
+    <div class="field">
+      <label class="input-label">
+        <span class="label-text">Username</span>
+        <div class="input-container">
+          <input 
+            [(ngModel)]="username" 
+            class="form-input"
+            placeholder="Digite seu username"
+            [disabled]="loading"
+          />
+        </div>
+      </label>
+    </div>
+
+    <div class="field">
+      <label class="input-label">
+        <span class="label-text">Password</span>
+        <div class="input-container">
+          <input 
+            type="password" 
+            [(ngModel)]="password" 
+            class="form-input"
+            placeholder="Digite sua senha"
+            [disabled]="loading"
+          />
+        </div>
+      </label>
+    </div>
+
+    <button 
+      class="login-btn" 
+      (click)="submit()" 
+      [disabled]="loading"
+      [class.loading]="loading"
+    >
+      <span class="btn-text" *ngIf="!loading">Entrar</span>
+      <span class="btn-loading" *ngIf="loading">
+        <span class="spinner"></span>
+        A entrar...
+      </span>
+    </button>
+
+    <p class="error-message" *ngIf="errorMessage">
+      <svg class="error-icon" viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+      </svg>
+      {{ errorMessage }}
+    </p>
+
+    <div class="card-footer">
+      <p class="footer-text">Problemas para acessar? <a href="#" class="help-link">Contacte o suporte</a></p>
+    </div>
+  </div>
+</div>

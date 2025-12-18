@@ -1,6 +1,4 @@
-.page {
-  padding: 16px;
-}
+.page { padding: 16px; }
 
 .toolbar {
   display: flex;
@@ -9,24 +7,15 @@
   margin-bottom: 12px;
 }
 
-.erro {
-  color: #c62828;
-  margin: 8px 0;
-}
+.erro { color: #c62828; }
 
 .tabela {
   width: 100%;
   border-collapse: collapse;
 }
 
-.tabela th,
-.tabela td {
+.tabela th, .tabela td {
   border: 1px solid #ddd;
   padding: 8px;
   vertical-align: top;
-}
-
-.vazio {
-  margin-top: 12px;
-  opacity: 0.8;
 }
