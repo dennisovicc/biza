@@ -2,10 +2,9 @@ package com.biza.dto;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.UUID;
 
 public record ClienteResponse(
-    UUID id,
+    Long id,
     String nome,
     String nuit,
     String bi,

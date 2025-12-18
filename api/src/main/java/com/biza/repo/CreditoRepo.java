@@ -10,6 +10,6 @@ import com.biza.domain.Credito;
 import com.biza.domain.enums.StatusCredito;
 
 public interface CreditoRepo extends JpaRepository<Credito, UUID> {
-    Page<Credito> findByClienteId(UUID clienteId, Pageable pageable);
+    Page<Credito> findByClienteId(Long clienteId, Pageable pageable);
     Page<Credito> findByStatus(StatusCredito status, Pageable pageable);
 }

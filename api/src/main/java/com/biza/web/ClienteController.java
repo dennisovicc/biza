@@ -2,12 +2,12 @@ package com.biza.web;
 
 import java.time.OffsetDateTime;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -38,25 +38,30 @@ public class ClienteController {
         this.repo = repo;
     }
 
+    @PreAuthorize("hasAnyRole('OFICIAL_CREDITO','ADMIN')")
     @GetMapping
     public PageResponse<ClienteResponse> list(@RequestParam(defaultValue = "0") int page,
                                               @RequestParam(defaultValue = "10") int size,
                                               @RequestParam(defaultValue = "nome,asc") String sort) {
         String[] parts = sort.split(",", 2);
         String campo = parts[0];
-        Sort.Direction dir = (parts.length > 1 && parts[1].equalsIgnoreCase("desc")) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort.Direction dir = (parts.length > 1 && parts[1].equalsIgnoreCase("desc"))
+                ? Sort.Direction.DESC
+                : Sort.Direction.ASC;
 
         Page<Cliente> p = repo.findAll(PageRequest.of(page, size, Sort.by(dir, campo)));
         return PageResponse.of(p.map(this::toResponse));
     }
 
+    @PreAuthorize("hasAnyRole('OFICIAL_CREDITO','ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<ClienteResponse> getById(@PathVariable UUID id) {
+    public ResponseEntity<ClienteResponse> getById(@PathVariable Long id) {
         return repo.findById(id)
-            .map(c -> ResponseEntity.ok(toResponse(c)))
-            .orElseGet(() -> ResponseEntity.notFound().build());
+                .map(c -> ResponseEntity.ok(toResponse(c)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasRole('OFICIAL_CREDITO')")
     @PostMapping
     public ResponseEntity<ClienteResponse> create(@RequestBody @Valid ClienteRequest req) {
         Cliente c = new Cliente();
@@ -65,35 +70,38 @@ public class ClienteController {
         return ResponseEntity.ok(toResponse(saved));
     }
 
-    // PUT = substituição total (nome obrigatório via DTO)
+    @PreAuthorize("hasRole('OFICIAL_CREDITO')")
     @PutMapping("/{id}")
-    public ResponseEntity<ClienteResponse> put(@PathVariable UUID id, @RequestBody @Valid ClienteRequest req) {
+    public ResponseEntity<ClienteResponse> put(@PathVariable Long id,
+                                               @RequestBody @Valid ClienteRequest req) {
         return repo.findById(id)
-            .map(c -> {
-                applyCreate(req, c);
-                c.setUpdatedAt(OffsetDateTime.now());
-                return ResponseEntity.ok(toResponse(repo.save(c)));
-            })
-            .orElseGet(() -> ResponseEntity.notFound().build());
+                .map(c -> {
+                    applyCreate(req, c);
+                    c.setUpdatedAt(OffsetDateTime.now());
+                    return ResponseEntity.ok(toResponse(repo.save(c)));
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // PATCH = atualização parcial (campos opcionais)
+    @PreAuthorize("hasRole('OFICIAL_CREDITO')")
     @PatchMapping("/{id}")
-    public ResponseEntity<ClienteResponse> patch(@PathVariable UUID id, @RequestBody @Valid ClienteUpdateRequest req) {
+    public ResponseEntity<ClienteResponse> patch(@PathVariable Long id,
+                                                 @RequestBody @Valid ClienteUpdateRequest req) {
         return repo.findById(id)
-            .map(c -> {
-                applyPatch(req, c);
-                c.setUpdatedAt(OffsetDateTime.now());
-                return ResponseEntity.ok(toResponse(repo.save(c)));
-            })
-            .orElseGet(() -> ResponseEntity.notFound().build());
+                .map(c -> {
+                    applyPatch(req, c);
+                    c.setUpdatedAt(OffsetDateTime.now());
+                    return ResponseEntity.ok(toResponse(repo.save(c)));
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, String>> delete(@PathVariable UUID id) {
+    public ResponseEntity<Map<String, String>> delete(@PathVariable Long id) {
         if (!repo.existsById(id)) return ResponseEntity.notFound().build();
         repo.deleteById(id);
-        return ResponseEntity.ok().body(Map.of("message", "Cliente removido successo"));
+        return ResponseEntity.ok().body(Map.of("message", "Cliente removido com sucesso"));
     }
 
     // -------- helpers --------
@@ -106,7 +114,6 @@ public class ClienteController {
         c.setEmail(r.email());
         c.setTipoCliente(r.tipoCliente());
         c.setRendaMensal(r.rendaMensal());
-        // createdAt/updatedAt já são geridos na entidade
     }
 
     private void applyPatch(ClienteUpdateRequest r, Cliente c) {
@@ -122,9 +129,17 @@ public class ClienteController {
 
     private ClienteResponse toResponse(Cliente c) {
         return new ClienteResponse(
-            c.getId(), c.getNome(), c.getNuit(), c.getBi(), c.getEndereco(),
-            c.getTelefone(), c.getEmail(), c.getTipoCliente(), c.getRendaMensal(),
-            c.getCreatedAt(), c.getUpdatedAt()
+                c.getId(),
+                c.getNome(),
+                c.getNuit(),
+                c.getBi(),
+                c.getEndereco(),
+                c.getTelefone(),
+                c.getEmail(),
+                c.getTipoCliente(),
+                c.getRendaMensal(),
+                c.getCreatedAt(),
+                c.getUpdatedAt()
         );
     }
 }
