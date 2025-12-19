@@ -24,22 +24,29 @@ public class H2SeedUsers {
 
     @PostConstruct
     public void seed() {
-
-        // cria só se ainda não existirem
-        criarSeNaoExiste("admin", "admin123", Role.ADMIN);
-        criarSeNaoExiste("oficial", "oficial123", Role.OFICIAL_CREDITO);
-        criarSeNaoExiste("gestor", "gestor123", Role.GESTOR_CREDITO);
+        // cria só se ainda não existirem com nomes específicos
+        criarSeNaoExiste("admin", "admin123", "Albano Silva", Role.ADMIN);
+        criarSeNaoExiste("oficial", "oficial123", "Francisco Biza", Role.OFICIAL_CREDITO);
+        criarSeNaoExiste("gestor", "gestor123", "John Snow", Role.GESTOR_CREDITO);
+        
+        System.out.println("Seed de utilizadores H2 concluído com sucesso!");
     }
 
-    private void criarSeNaoExiste(String username, String rawPassword, Role role) {
-        if (repo.findByUsername(username).isPresent()) return;
+    private void criarSeNaoExiste(String username, String rawPassword, String nome, Role role) {
+        if (repo.findByUsername(username).isPresent()) {
+            System.out.println("Utilizador '" + username + "' já existe, a ignorar...");
+            return;
+        }
 
         Utilizador u = new Utilizador();
         u.setUsername(username);
+        u.setName(nome);  // Nome do utilizador (obrigatório)
         u.setPasswordHash(encoder.encode(rawPassword));
         u.setRole(role);
         u.setActivo(true);
+        // createdAt é automaticamente definido na entidade Utilizador
 
         repo.save(u);
+        System.out.println("✓ Utilizador criado: " + username + " (" + nome + ") como " + role);
     }
 }

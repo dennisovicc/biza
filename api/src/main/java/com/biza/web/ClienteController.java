@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.biza.domain.Cliente;
+import com.biza.domain.enums.StatusRegistro;
 import com.biza.dto.ClienteRequest;
 import com.biza.dto.ClienteResponse;
 import com.biza.dto.ClienteUpdateRequest;
@@ -104,6 +105,19 @@ public class ClienteController {
         return ResponseEntity.ok().body(Map.of("message", "Cliente removido com sucesso"));
     }
 
+        
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/{id}/inativar")
+    public ResponseEntity<?> inativar(@PathVariable Long id) {
+        return repo.findById(id)
+            .map(c -> {
+                c.setStatus(StatusRegistro.INACTIVO); // ou c.setActivo(false) conforme o teu modelo
+                c.setUpdatedAt(OffsetDateTime.now());
+                repo.save(c);
+                return ResponseEntity.ok().build();
+            })
+            .orElseGet(() -> ResponseEntity.notFound().build());
+    }
     // -------- helpers --------
     private void applyCreate(ClienteRequest r, Cliente c) {
         c.setNome(r.nome());

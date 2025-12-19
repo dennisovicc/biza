@@ -5,14 +5,7 @@ import java.util.UUID;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.biza.domain.Pagamento;
 import com.biza.dto.PagamentoRequest;
@@ -33,24 +26,27 @@ public class PagamentoController {
         this.service = service;
     }
 
+    // só GESTOR regista
     @PreAuthorize("hasRole('GESTOR_CREDITO')")
     @PostMapping
     public PagamentoResponse registrar(@RequestBody @Valid PagamentoRequest req) {
         return toResponse(service.registrar(req));
     }
 
+    // GESTOR e ADMIN consultam
     @PreAuthorize("hasAnyRole('GESTOR_CREDITO','ADMIN')")
     @GetMapping("/{id}")
     public PagamentoResponse obter(@PathVariable UUID id) {
         return toResponse(service.obter(id));
     }
 
+    // GESTOR e ADMIN listam
     @PreAuthorize("hasAnyRole('GESTOR_CREDITO','ADMIN')")
     @GetMapping
     public PageResponse<PagamentoResponse> listar(@RequestParam(required = false) String creditoId,
-                                                  @RequestParam(defaultValue = "0") int page,
-                                                  @RequestParam(defaultValue = "10") int size,
-                                                  @RequestParam(defaultValue = "dataPagamento,desc") String sort) {
+                                                 @RequestParam(defaultValue = "0") int page,
+                                                 @RequestParam(defaultValue = "10") int size,
+                                                 @RequestParam(defaultValue = "dataPagamento,desc") String sort) {
 
         String[] parts = sort.split(",", 2);
         String campo = parts[0];
@@ -61,6 +57,7 @@ public class PagamentoController {
 
         UUID creditoUUID = toUuid(creditoId);
         var pagina = service.listar(creditoUUID, pageable);
+
         return PageResponse.of(pagina.map(this::toResponse));
     }
 

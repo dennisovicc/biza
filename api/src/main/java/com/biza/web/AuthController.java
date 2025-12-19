@@ -37,20 +37,24 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest req) {
 
-        // 1) valida credenciais (usa UserDetailsService + PasswordEncoder configurados)
+        // 1) valida credenciais
         authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(req.username(), req.password())
         );
 
-        // 2) buscar o utilizador real (para devolver id/name/role)
+        // 2) buscar utilizador real
         var u = utilizadorRepo.findByUsername(req.username())
                 .orElseThrow(() -> new RuntimeException("Utilizador não encontrado"));
 
         if (!u.isActivo())
             throw new RuntimeException("Utilizador inactivo");
 
-        // 3) gerar token
-        String token = jwtService.generateToken(u.getUsername(), u.getRole().name());
+        // 3) gerar token (agora com name)
+        String token = jwtService.generateToken(
+                u.getUsername(),
+                u.getRole().name(),
+                u.getName()
+        );
 
         // 4) devolver user completo
         AuthUserResponse user = new AuthUserResponse(

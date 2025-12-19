@@ -23,18 +23,21 @@ public class JwtService {
 
     public JwtService(@Value("${biza.jwt.secret}") String secret,
                       @Value("${biza.jwt.expiration-minutes:120}") long expirationMinutes) {
+        // IMPORTANTE: secret >= 32 chars (256 bits) para HS256
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.expirationMinutes = expirationMinutes;
     }
 
-    // ✅ username é String; role é String
-    public String generateToken(String username, String role) {
+    public String generateToken(String username, String role, String name) {
         Instant now = Instant.now();
         Instant exp = now.plusSeconds(expirationMinutes * 60);
 
         return Jwts.builder()
-                .subject(username) // ✅ subject = username
-                .claims(Map.of("role", role))
+                .subject(username)
+                .claims(Map.of(
+                        "role", role,
+                        "name", name
+                ))
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(exp))
                 .signWith(key)
@@ -48,6 +51,11 @@ public class JwtService {
     public String extractRole(String token) {
         Object role = parseClaims(token).get("role");
         return role == null ? null : role.toString();
+    }
+
+    public String extractName(String token) {
+        Object name = parseClaims(token).get("name");
+        return name == null ? null : name.toString();
     }
 
     public boolean isTokenValid(String token, UserDetails user) {

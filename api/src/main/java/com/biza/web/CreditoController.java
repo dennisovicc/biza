@@ -5,15 +5,7 @@ import java.util.UUID;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.biza.domain.Credito;
 import com.biza.domain.enums.StatusCredito;
@@ -35,41 +27,43 @@ public class CreditoController {
         this.service = service;
     }
 
+    // OFICIAL_CREDITO cria pedido
     @PreAuthorize("hasRole('OFICIAL_CREDITO')")
     @PostMapping
     public CreditoResponse criar(@RequestBody @Valid CreditoRequest req) {
         return toResponse(service.criar(req));
     }
 
+    // consulta (OFICIAL, GESTOR, ADMIN)
     @PreAuthorize("hasAnyRole('OFICIAL_CREDITO','GESTOR_CREDITO','ADMIN')")
     @GetMapping("/{id}")
     public CreditoResponse obter(@PathVariable UUID id) {
         return toResponse(service.obter(id));
     }
 
+    // lista (OFICIAL, GESTOR, ADMIN)
     @PreAuthorize("hasAnyRole('OFICIAL_CREDITO','GESTOR_CREDITO','ADMIN')")
     @GetMapping
     public PageResponse<CreditoResponse> listar(@RequestParam(required = false) Long clienteId,
-                                                @RequestParam(required = false) String status,
-                                                @RequestParam(defaultValue = "0") int page,
-                                                @RequestParam(defaultValue = "10") int size,
-                                                @RequestParam(defaultValue = "createdAt,desc") String sort) {
+                                               @RequestParam(required = false) String status,
+                                               @RequestParam(defaultValue = "0") int page,
+                                               @RequestParam(defaultValue = "10") int size,
+                                               @RequestParam(defaultValue = "createdAt,desc") String sort) {
 
         String[] parts = sort.split(",", 2);
         String campo = parts[0];
         Sort.Direction dir = (parts.length > 1 && parts[1].equalsIgnoreCase("desc"))
-                ? Sort.Direction.DESC
-                : Sort.Direction.ASC;
+                ? Sort.Direction.DESC : Sort.Direction.ASC;
 
         var pageable = PageRequest.of(page, size, Sort.by(dir, campo));
-        StatusCredito statusEnum = toStatus(status);
 
+        StatusCredito statusEnum = toStatus(status);
         var pagina = service.listar(clienteId, statusEnum, pageable);
+
         return PageResponse.of(pagina.map(this::toResponse));
     }
 
-    // PERFIL: GESTOR DO CRÉDITO (aprova / rejeita / etc.)
-
+    // GESTOR faz workflow
     @PreAuthorize("hasRole('GESTOR_CREDITO')")
     @PatchMapping("/{id}/aprovar")
     public CreditoResponse aprovar(@PathVariable UUID id) {
