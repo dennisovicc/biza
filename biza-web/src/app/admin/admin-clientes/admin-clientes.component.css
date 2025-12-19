@@ -1,0 +1,9 @@
+.card { border: 1px solid #eee; border-radius: 12px; padding: 12px; margin-top: 12px; }
+.row { display: flex; align-items: center; justify-content: space-between; }
+button { padding: 10px 12px; border-radius: 10px; border: 1px solid #111; background: #111; color: #fff; cursor: pointer; }
+button[disabled] { opacity: .6; cursor: not-allowed; }
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th, td { border-bottom: 1px solid #eee; padding: 10px; text-align: left; font-size: 13px; }
+.msg { margin: 10px 0; padding: 10px; border-radius: 10px; }
+.msg.error { background: #ffe8e8; border: 1px solid #ffb5b5; }
+.msg.ok { background: #e9ffe8; border: 1px solid #b6ffb5; }

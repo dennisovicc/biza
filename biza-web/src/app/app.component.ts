@@ -10,10 +10,7 @@ import { AuthService } from './services/auth.service';
 export class AppComponent {
   title = 'Biza Microcrédito';
 
-  constructor(
-    public auth: AuthService,
-    private router: Router
-  ) {}
+  constructor(public auth: AuthService, private router: Router) {}
 
   logout(): void {
     this.auth.logout();

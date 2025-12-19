@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { CreditoService, PageResponse } from '../../services/credito.service';
+import { CreditoService } from '../../services/credito.service';
+import { PageResponse } from '../../models/page-response.model';
 import { Credito } from '../../models/credito.model';
 
 @Component({

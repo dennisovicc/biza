@@ -32,7 +32,7 @@ export class LoginComponent {
           const role = res.user?.role;
           const target =
             role === 'GESTOR_CREDITO' ? '/credito-aprovacao'
-            : role === 'ADMIN'        ? '/clientes'
+            : role === 'ADMIN'        ? '/admin'
             : '/creditos'; // OFICIAL_CREDITO
 
           this.router.navigateByUrl(target);

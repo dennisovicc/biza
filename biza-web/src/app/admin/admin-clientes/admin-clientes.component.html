@@ -1,0 +1,40 @@
+<h2>Clientes</h2>
+
+<div class="msg error" *ngIf="errorMessage">{{ errorMessage }}</div>
+<div class="msg ok" *ngIf="okMessage">{{ okMessage }}</div>
+
+<div class="card">
+  <div class="row">
+    <h3>Lista</h3>
+    <button (click)="listar()" [disabled]="loading">Actualizar</button>
+  </div>
+
+  <table *ngIf="clientes.length">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>NUIT</th>
+        <th>Telefone</th>
+        <th>Status</th>
+        <th>Ação</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let c of clientes">
+        <td>{{ c.id }}</td>
+        <td>{{ c.nome }}</td>
+        <td>{{ c.nuit || '-' }}</td>
+        <td>{{ c.telefone || '-' }}</td>
+        <td>{{ c.status }}</td>
+        <td>
+          <button (click)="inativar(c)" [disabled]="loading || c.status==='INACTIVO'">
+            Inactivar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="!loading && !clientes.length">Sem clientes.</p>
+</div>

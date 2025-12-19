@@ -1,0 +1,5 @@
+.admin-shell { padding: 16px; }
+.admin-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+.admin-tabs button { padding: 10px 12px; border-radius: 10px; border: 1px solid #ddd; background: #fff; cursor: pointer; }
+.admin-tabs button.active { border-color: #111; font-weight: 600; }
+.admin-body { border: 1px solid #eee; border-radius: 12px; padding: 12px; background: #fff; }

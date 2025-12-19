@@ -1,0 +1,79 @@
+<h2>Consulta (Admin)</h2>
+
+<div class="grid2">
+  <div class="card">
+    <div class="row">
+      <h3>Créditos (read-only)</h3>
+      <button (click)="carregarCreditos()" [disabled]="loadingCreditos">Carregar</button>
+    </div>
+
+    <label class="filter">
+      Filtrar por status (ex: SOLICITADO, EM_CURSO, LIQUIDADO)
+      <input [(ngModel)]="filtroStatus" placeholder="status opcional" />
+    </label>
+
+    <div class="msg error" *ngIf="errorCreditos">{{ errorCreditos }}</div>
+
+    <table *ngIf="creditos.length">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Cliente</th>
+          <th>Tipo</th>
+          <th>Montante</th>
+          <th>Status</th>
+          <th>Saldo</th>
+          <th>Atraso (meses)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let c of creditos">
+          <td>{{ c.id }}</td>
+          <td>{{ c.clienteId }}</td>
+          <td>{{ c.tipoCredito }}</td>
+          <td>{{ c.montante }}</td>
+          <td>{{ c.status }}</td>
+          <td>{{ c.saldoDevedor }}</td>
+          <td>{{ c.mesesEmAtraso }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p *ngIf="!loadingCreditos && !creditos.length">Sem dados.</p>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <h3>Pagamentos (read-only)</h3>
+      <button (click)="carregarPagamentos()" [disabled]="loadingPagamentos">Carregar</button>
+    </div>
+
+    <label class="filter">
+      Filtrar por creditoId (UUID)
+      <input [(ngModel)]="filtroCreditoId" placeholder="UUID do crédito (opcional)" />
+    </label>
+
+    <div class="msg error" *ngIf="errorPagamentos">{{ errorPagamentos }}</div>
+
+    <table *ngIf="pagamentos.length">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Crédito</th>
+          <th>Valor</th>
+          <th>Data</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of pagamentos">
+          <td>{{ p.id }}</td>
+          <td>{{ p.creditoId }}</td>
+          <td>{{ p.valor }}</td>
+          <td>{{ p.dataPagamento }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p *ngIf="!loadingPagamentos && !pagamentos.length">Sem dados.</p>
+  </div>
+</div>

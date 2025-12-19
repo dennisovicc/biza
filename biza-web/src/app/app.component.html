@@ -1,39 +1,28 @@
-<div class="app-shell">
-  <header class="app-header">
-  <!-- ESQUERDA: logo + título -->
-  <div class="header-left">
-    <img class="logo" src="assets/logo.png" alt="Biza Logo" />
+<header class="app-header">
+  <div class="brand">
+    <img class="logo" src="assets/logo.png" alt="Biza" />
     <h1>{{ title }}</h1>
   </div>
-  <!-- CENTRO: navegação -->
+
   <nav class="app-nav" *ngIf="auth.isLoggedIn()">
-    <a *ngIf="auth.hasAnyRole(['OFICIAL_CREDITO','ADMIN'])"
-       routerLink="/clientes" routerLinkActive="active">
-       Clientes
-    </a>
-    <a *ngIf="auth.hasAnyRole(['OFICIAL_CREDITO','ADMIN'])"
-       routerLink="/creditos" routerLinkActive="active">
-       Créditos
-    </a>
-    <a *ngIf="auth.hasAnyRole(['GESTOR_CREDITO','ADMIN'])"
-       routerLink="/credito-aprovacao" routerLinkActive="active">
-       Aprovação
-    </a>
-    <a *ngIf="auth.hasAnyRole(['GESTOR_CREDITO','ADMIN'])"
-       routerLink="/pagamentos" routerLinkActive="active">
-       Pagamentos
-    </a>
+    <a *ngIf="auth.hasAnyRole(['OFICIAL_CREDITO'])" routerLink="/clientes" routerLinkActive="active">Clientes</a>
+    <a *ngIf="auth.hasAnyRole(['OFICIAL_CREDITO'])" routerLink="/creditos" routerLinkActive="active">Créditos</a>
+
+    <a *ngIf="auth.hasAnyRole(['GESTOR_CREDITO'])" routerLink="/credito-aprovacao" routerLinkActive="active">Aprovação</a>
+    <a *ngIf="auth.hasAnyRole(['GESTOR_CREDITO'])" routerLink="/pagamentos" routerLinkActive="active">Pagamentos</a>
+
+    <a *ngIf="auth.hasAnyRole(['ADMIN'])" routerLink="/admin" routerLinkActive="active">Admin</a>
   </nav>
-  <!-- DIREITA: utilizador + logout -->
+
   <div class="header-right" *ngIf="auth.isLoggedIn()">
     <div class="user-box">
-      <div class="user-name">{{ auth.getUsername() }}</div>
+      <div class="user-name">{{ auth.getDisplayName() }}</div>
       <div class="user-role">{{ auth.getRole() }}</div>
     </div>
-    <button class="logout-btn" (click)="logout()">Sair</button>
+    <button class="btn-logout" (click)="logout()">Sair</button>
   </div>
 </header>
-  <main class="app-main">
-    <router-outlet></router-outlet>
-  </main>
-</div>
+
+<main class="app-main">
+  <router-outlet></router-outlet>
+</main>

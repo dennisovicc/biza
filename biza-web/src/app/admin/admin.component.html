@@ -1,0 +1,13 @@
+<div class="admin-shell">
+  <div class="admin-tabs">
+    <button (click)="setTab('utilizadores')" [class.active]="tab==='utilizadores'">Utilizadores</button>
+    <button (click)="setTab('clientes')" [class.active]="tab==='clientes'">Clientes</button>
+    <button (click)="setTab('consulta')" [class.active]="tab==='consulta'">Consulta</button>
+  </div>
+
+  <div class="admin-body">
+    <app-admin-utilizadores *ngIf="tab==='utilizadores'"></app-admin-utilizadores>
+    <app-admin-clientes *ngIf="tab==='clientes'"></app-admin-clientes>
+    <app-admin-consulta *ngIf="tab==='consulta'"></app-admin-consulta>
+  </div>
+</div>

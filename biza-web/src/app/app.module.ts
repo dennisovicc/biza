@@ -14,6 +14,10 @@ import { CreditoAcoesComponent } from './creditos/credito-acoes/credito-acoes.co
 import { CreditoAprovacaoComponent } from './creditos/credito-aprovacao/credito-aprovacao.component';
 import { AuthInterceptor } from './security/auth.interceptor';
 import { LoginComponent } from './auth/login/login.component';
+import { AdminUtilizadoresComponent } from './admin/admin-utilizadores/admin-utilizadores.component';
+import { AdminClientesComponent } from './admin/admin-clientes/admin-clientes.component';
+import { AdminConsultaComponent } from './admin/admin-consulta/admin-consulta.component';
+import { AdminComponent } from './admin/admin.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +27,11 @@ import { LoginComponent } from './auth/login/login.component';
     PagamentosComponent,
     CreditoAcoesComponent,
     CreditoAprovacaoComponent,
-    LoginComponent
+    LoginComponent,
+    AdminUtilizadoresComponent,
+    AdminClientesComponent,
+    AdminConsultaComponent,
+    AdminComponent
   ],
   imports: [
     BrowserModule,

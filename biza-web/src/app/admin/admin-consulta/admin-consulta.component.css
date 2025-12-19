@@ -1,0 +1,11 @@
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.card { border: 1px solid #eee; border-radius: 12px; padding: 12px; background: #fff; }
+.row { display: flex; align-items: center; justify-content: space-between; }
+button { padding: 10px 12px; border-radius: 10px; border: 1px solid #111; background: #111; color: #fff; cursor: pointer; }
+button[disabled] { opacity: .6; cursor: not-allowed; }
+.filter { display: flex; flex-direction: column; gap: 6px; margin: 10px 0; font-size: 13px; }
+input { padding: 10px; border-radius: 10px; border: 1px solid #ddd; }
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th, td { border-bottom: 1px solid #eee; padding: 10px; text-align: left; font-size: 13px; }
+.msg { margin: 10px 0; padding: 10px; border-radius: 10px; }
+.msg.error { background: #ffe8e8; border: 1px solid #ffb5b5; }

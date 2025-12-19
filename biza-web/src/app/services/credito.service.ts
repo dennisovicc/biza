@@ -2,14 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Credito } from '../models/credito.model';
-
-export interface PageResponse<T> {
-  content: T[];
-  totalElements: number;
-  totalPages: number;
-  size: number;
-  number: number;
-}
+import { PageResponse } from '../models/page-response.model';
 
 export interface CriarCreditoRequest {
   clienteId: number;
@@ -28,15 +21,11 @@ export class CreditoService {
     return this.http.post<Credito>(this.baseUrl, req);
   }
 
-listar(clienteId?: number, filtroStatus?: string): Observable<PageResponse<Credito>> {
-  let params = new HttpParams();
-  if (clienteId != null) {
-    params = params.set('clienteId', clienteId);
-  }
-  if (filtroStatus != null && filtroStatus !== '') {
-    params = params.set('status', filtroStatus);
-  }
-  return this.http.get<PageResponse<Credito>>(this.baseUrl, { params });
+  listar(clienteId?: number, status?: string): Observable<PageResponse<Credito>> {
+    let params = new HttpParams();
+    if (clienteId != null) params = params.set('clienteId', clienteId);
+    if (status != null && status !== '') params = params.set('status', status);
+    return this.http.get<PageResponse<Credito>>(this.baseUrl, { params });
   }
 
   aprovar(id: string) {
@@ -58,9 +47,4 @@ listar(clienteId?: number, filtroStatus?: string): Observable<PageResponse<Credi
   atualizarSaldo(id: string) {
     return this.http.patch<Credito>(`${this.baseUrl}/${id}/atualizar-saldo`, {});
   }
-  listarPorStatus(status: string): Observable<PageResponse<Credito>> {
-  let params = new HttpParams().set('status', status);
-  return this.http.get<PageResponse<Credito>>(this.baseUrl, { params });
-}
-
 }

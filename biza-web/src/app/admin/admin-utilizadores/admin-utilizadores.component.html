@@ -1,0 +1,70 @@
+<h2>Utilizadores</h2>
+
+<div class="msg error" *ngIf="errorMessage">{{ errorMessage }}</div>
+<div class="msg ok" *ngIf="okMessage">{{ okMessage }}</div>
+
+<div class="card">
+  <h3>Criar utilizador</h3>
+
+  <div class="grid">
+    <label>
+      Nome
+      <input [(ngModel)]="form.name" placeholder="Ex: Albano Silva" />
+    </label>
+
+    <label>
+      Username
+      <input [(ngModel)]="form.username" placeholder="Ex: admin" />
+    </label>
+
+    <label>
+      Password
+      <input [(ngModel)]="form.password" type="password" placeholder="mín. 6 chars" />
+    </label>
+
+    <label>
+      Perfil
+      <select [(ngModel)]="form.role">
+        <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
+      </select>
+    </label>
+  </div>
+
+  <button (click)="criar()" [disabled]="loading">Criar</button>
+</div>
+
+<div class="card">
+  <div class="row">
+    <h3>Lista</h3>
+    <button (click)="listar()" [disabled]="loading">Actualizar</button>
+  </div>
+
+  <table *ngIf="users.length">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Username</th>
+        <th>Role</th>
+        <th>Activo</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let u of users">
+        <td>{{ u.id }}</td>
+        <td>{{ u.name }}</td>
+        <td>{{ u.username }}</td>
+        <td>{{ u.role }}</td>
+        <td>{{ u.activo ? 'SIM' : 'NÃO' }}</td>
+        <td>
+          <button (click)="toggleActivo(u)" [disabled]="loading">
+            {{ u.activo ? 'Inactivar' : 'Ativar' }}
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="!loading && !users.length">Sem utilizadores.</p>
+</div>
